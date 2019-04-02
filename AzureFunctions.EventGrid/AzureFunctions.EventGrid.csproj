@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>AzureFunctions.EventGridBinding</PackageId>
+    <Authors>Jan de Vries</Authors>
+    <Product>AzureFunctions.EventGridBinding</Product>
+    <Description>An output binding for Event Grid.
+You can specify all necessary event details you need.</Description>
+    <PackageProjectUrl>https://github.com/Jandev/azurefunctions-eventgrid</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Jandev/azurefunctions-eventgrid</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>Azure Functions Binding Event Grid</PackageTags>
+    <PackageReleaseNotes>Initial version with an output binding to Event Grid using the default Event Grid SDK</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.5" />
+  </ItemGroup>
+
+</Project>
