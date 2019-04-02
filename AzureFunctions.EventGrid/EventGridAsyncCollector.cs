@@ -11,24 +11,19 @@ namespace AzureFunctions.EventGrid
 {
     public class EventGridAsyncCollector : IAsyncCollector<Event>
     {
-        private readonly EventGridAttribute attribute;
         private readonly string topicHostname;
-        private readonly EventGridClient eventGridClient;
-
+        
         private readonly IList<Event> eventCollection;
+        private readonly TopicCredentials topicCredentials;
 
         public EventGridAsyncCollector(EventGridAttribute attribute)
         {
             this.eventCollection = new List<Event>();
-
-            this.attribute = attribute;
             string topicEndpoint = attribute.TopicEndpoint;
             string topicKey = attribute.TopicKey;
 
             this.topicHostname = new Uri(topicEndpoint).Host;
-            
-            var topicCredentials = new TopicCredentials(topicKey);
-            this.eventGridClient = new EventGridClient(topicCredentials);
+            this.topicCredentials = new TopicCredentials(topicKey);
         }
 
         /// <summary>
@@ -53,10 +48,13 @@ namespace AzureFunctions.EventGrid
             var eventGridEventCollection = CreateEventGridEventCollection();
             if (eventGridEventCollection.Any())
             {
-                await this.eventGridClient.PublishEventsAsync(
-                    topicHostname, 
-                    eventGridEventCollection,
-                    cancellationToken);
+                using (var eventGridClient = new EventGridClient(topicCredentials))
+                {
+                    await eventGridClient.PublishEventsAsync(
+                        topicHostname,
+                        eventGridEventCollection,
+                        cancellationToken);
+                }
             }
         }
 
