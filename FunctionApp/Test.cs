@@ -15,22 +15,38 @@ namespace FunctionApp
         [FunctionName("Test")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-            [EventGrid()] IAsyncCollector<Event> outputCollector,
+            [EventGrid(
+                TopicEndpoint = "EventGridBindingSampleTopicEndpoint", 
+                TopicKey = "EventGridBindingSampleTopicKey")] 
+            IAsyncCollector<Event> outputCollector,
             ILogger log)
         {
             log.LogInformation("Executing the Test function");
-
-            string name = req.Query["name"];
-
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            
+            var customEvent = new MyCustomEvent
+            {
+                Identifier = 1,
+                Name = "Jan",
+                Product = "Azure Functions"
+            };
+            var myTestEvent = new Event
+            {
+                EventType = nameof(MyCustomEvent),
+                Subject = "Jandev/Samples/CustomTestEvent",
+                Data = customEvent
+            };
+            await outputCollector.AddAsync(myTestEvent);
 
             log.LogInformation("Executed the Test function");
 
-            return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            return new OkObjectResult($"Sending {customEvent.Identifier}.");
+        }
+
+        private class MyCustomEvent
+        {
+            public int Identifier { get; set; }
+            public string Name { get; set; }
+            public string Product { get; set; }
         }
     }
 }

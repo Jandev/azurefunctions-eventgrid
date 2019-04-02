@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.6" />
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.5" />
   </ItemGroup>
 
 </Project>
