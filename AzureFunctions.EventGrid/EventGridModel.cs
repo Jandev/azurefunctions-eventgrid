@@ -2,7 +2,7 @@
 
 namespace AzureFunctions.EventGrid
 {
-    class EventGridModel :Event
+    internal class EventGridModel :Event
     {
         //
         // Summary:
