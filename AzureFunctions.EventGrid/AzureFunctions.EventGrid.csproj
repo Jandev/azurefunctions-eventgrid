@@ -16,7 +16,6 @@ You can specify all necessary event details you need.</Description>
     <PackageIcon>icon-logo.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.0.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.5" />
   </ItemGroup>
   <ItemGroup>

@@ -1,29 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.EventGrid;
-using Microsoft.Azure.EventGrid.Models;
 using Microsoft.Azure.WebJobs;
+using Newtonsoft.Json;
 
 namespace AzureFunctions.EventGrid
 {
     public class EventGridAsyncCollector : IAsyncCollector<Event>
     {
-        private readonly string topicHostname;
-        
+        private readonly string topicEndPoint;       
+        private readonly string topicKey; 
+
         private readonly IList<Event> eventCollection;
-        private readonly TopicCredentials topicCredentials;
+        private readonly EventGridAttribute attribute;
+        
+        private HttpClient httpClient;
+
 
         public EventGridAsyncCollector(EventGridAttribute attribute)
         {
             this.eventCollection = new List<Event>();
-            string topicEndpoint = attribute.TopicEndpoint;
-            string topicKey = attribute.TopicKey;
+            this.topicEndPoint = attribute.TopicEndpoint;
+            this.topicKey = attribute.TopicKey;
+            this.attribute = attribute;
 
-            this.topicHostname = new Uri(topicEndpoint).Host;
-            this.topicCredentials = new TopicCredentials(topicKey);
         }
 
         /// <summary>
@@ -34,6 +38,11 @@ namespace AzureFunctions.EventGrid
         /// <returns><see cref="Task.CompletedTask"/>.</returns>
         public Task AddAsync(Event item, CancellationToken cancellationToken = new CancellationToken())
         {
+            if (httpClient == null)
+            {
+                httpClient = attribute.HttpClient ?? new HttpClient();
+            }
+
             this.eventCollection.Add(item);
 
             return Task.CompletedTask;
@@ -48,22 +57,19 @@ namespace AzureFunctions.EventGrid
             var eventGridEventCollection = CreateEventGridEventCollection();
             if (eventGridEventCollection.Any())
             {
-                using (var eventGridClient = new EventGridClient(topicCredentials))
-                {
-                    await eventGridClient.PublishEventsAsync(
-                        topicHostname,
-                        eventGridEventCollection,
-                        cancellationToken);
-                }
+                HttpContent httpContent = new StringContent(JsonConvert.SerializeObject(eventGridEventCollection), Encoding.UTF8, "application/json");
+                httpContent.Headers.Add("aeg-sas-key", topicKey);
+                await httpClient.PostAsync(topicEndPoint, httpContent, cancellationToken);
             }
         }
 
-        private IList<EventGridEvent> CreateEventGridEventCollection()
+        private IList<EventGridModel> CreateEventGridEventCollection()
         {
-            var eventGridEventCollection = new List<EventGridEvent>();
+            var eventGridEventCollection = new List<EventGridModel>();
             foreach (var @event in eventCollection)
             {
-                var eventGridEvent = new EventGridEvent(
+
+                var eventGridEvent = new EventGridModel(
                     id: Guid.NewGuid().ToString("N"),
                     subject: @event.Subject,
                     dataVersion: @event.DataVersion,

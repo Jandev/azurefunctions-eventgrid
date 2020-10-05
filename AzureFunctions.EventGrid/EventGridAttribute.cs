@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using Microsoft.Azure.WebJobs.Description;
 
 namespace AzureFunctions.EventGrid
@@ -20,5 +21,10 @@ namespace AzureFunctions.EventGrid
         /// </summary>
         [AppSetting]
         public string TopicKey { get; set; }
+
+        /// <summary>
+        /// If you have already instantiated an <seealso cref="System.Net.Http.HttpClient"/>, pass it to this property.
+        /// </summary>
+        public HttpClient HttpClient { get; set; }
     }
 }
