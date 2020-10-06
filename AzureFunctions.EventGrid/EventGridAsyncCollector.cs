@@ -18,7 +18,7 @@ namespace AzureFunctions.EventGrid
         private readonly IList<Event> eventCollection;
         private readonly EventGridAttribute attribute;
         
-        private HttpClient httpClient;
+        private static HttpClient httpClient;
 
 
         public EventGridAsyncCollector(EventGridAttribute attribute)

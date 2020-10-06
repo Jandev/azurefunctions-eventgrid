@@ -66,3 +66,14 @@ private class MyCustomEvent
 
 The publishing of the events will be executed after the Azure Function is finished, 
 in the `FlushAsync` method of the `IAsyncCollector<T>`.
+
+In order for this to work you need a `local.settings.json` file with the  following values. For `EventGridBindingSampleTopicEndpoint` setting, you have to provide the endpoint along with the [api-version](https://docs.microsoft.com/en-us/rest/api/eventgrid/dataplane/publishevents/publishevents) header.
+
+```
+{
+	"Values": {
+		"EventGridBindingSampleTopicEndpoint": "https://{topicHostname}/api/events?api-version=2018-01-01",
+		"EventGridBindingSampleTopicKey": "{Topic Key}"
+	}
+}
+```
