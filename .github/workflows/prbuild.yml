@@ -2,7 +2,7 @@ name: Build & Test
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ main, develop ]
 
 jobs:
   build:
@@ -15,9 +15,12 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+
     - name: Install dependencies
       run: dotnet restore ./AzureFunctions.EventGrid/AzureFunctions.EventGrid.csproj
+
     - name: Build
       run: dotnet build ./AzureFunctions.EventGrid/AzureFunctions.EventGrid.csproj --configuration Release --no-restore
+
     - name: Test
       run: dotnet test ./AzureFunctions.EventGrid/AzureFunctions.EventGrid.csproj --no-restore --verbosity normal
