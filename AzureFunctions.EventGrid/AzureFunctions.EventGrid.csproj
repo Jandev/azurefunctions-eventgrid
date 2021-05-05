@@ -2,21 +2,45 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- For local/debug builds -->
+    <VersionSuffix Condition=" '$(Configuration)' == 'Debug' ">debug</VersionSuffix>
+    <!-- This is using variables that are specific to Azure Dev Ops Pipelines -->
+    <VersionSuffix Condition=" '$(Build_SourceBranch)' == 'refs/heads/develop' ">beta.$(Build_BuildID)</VersionSuffix>
     <PackageId>AzureFunctions.EventGridBinding</PackageId>
-    <Authors>Jan de Vries</Authors>
     <Product>AzureFunctions.EventGridBinding</Product>
+    <Authors>Jan de Vries</Authors>
+    <Company />    
     <Description>An output binding for Event Grid.
 You can specify all necessary event details you need.</Description>
     <PackageProjectUrl>https://github.com/Jandev/azurefunctions-eventgrid</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Jandev/azurefunctions-eventgrid</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <PackageTags>Azure Functions Binding Event Grid</PackageTags>
-    <PackageReleaseNotes>Initial version with an output binding to Event Grid using the default Event Grid SDK</PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>Azure Function, Binding, Event Grid, messaging</PackageTags>
+    <PackageReleaseNotes>- Initial version, supporting the output of events
+- Added awesome package icon</PackageReleaseNotes>
+    <PackageIcon>icon-logo.png</PackageIcon>
+    <IconUrl>https://raw.githubusercontent.com/Jandev/azurefunctions-eventgrid/main/AzureFunctions.EventGrid/icon-logo.png</IconUrl>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.0.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\icon-logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
